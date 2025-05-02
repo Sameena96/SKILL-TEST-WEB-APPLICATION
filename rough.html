@@ -1,0 +1,403 @@
+<br><br><br><br><br><br><br>
+	<div class="col-md-6 text-center text-white">
+  <?php
+  ini_set('display_errors', 1);
+	error_reporting(E_ALL);
+
+  session_start();
+  if (isset($_SESSION['loggedin']) && isset($_SESSION['username'])) {
+    echo "<div class='welcome-container'>
+            <h1>Hello! ".$_SESSION['username']."</h1>
+          </div>";
+  }
+  ?>
+  
+  <!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  		<link rel="stylesheet" href="styles.css">
+  		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+  		  <style>
+    /* Add media query to adjust styles for smaller devices */
+    @media (max-width: 768px) {
+      .navbar-nav .nav-link {
+        color: rgba(5, 5, 5); /* Change text color for small devices */
+      }
+      .navbar-nav .nav-link:hover {
+	  background-color: rgba(245, 243, 115);
+	  border-radius: 0.25rem;
+		}
+    }
+  </style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light">
+		<a class="navbar-brand dflex" href="#about">
+  			<img src="K.jpeg" class="rounded-pill" height="50" width="100%">
+  			<span class="text-warning m-0 ml-2">SKILL TEST</span>
+  		</a>
+  		<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#mynav">
+                <span class="navbar-toggler-icon"></span>
+       </button>
+		<div class="collapse navbar-collapse" id="mynav">
+			<ul class="navbar-nav ml-auto">
+			   <li class="nav-item active">
+			     <a class="nav-link" href="file:///opt/lampp/htdocs/mysite/PRO/SkillTestWeb.html">Home </a>
+			   </li>
+			   <li class="nav-item">
+			     <a class="nav-link" href="administration.html">Administration</a>
+			   </li>
+			   <li class="nav-item">
+			     <a class="nav-link" href="#">Registration</a>
+			   </li>
+			   <li class="nav-item">
+			     <a class="nav-link" href="#">Login</a>
+			   </li>
+		      <li class="nav-item">
+			     <a class="nav-link" href="#">Contact Us</a>
+			   </li>
+			</ul>
+	  	</div>
+	</nav>
+
+	<div class="container">
+	<br><br><br><br><br><br><br><br><br><br>
+	</div>
+	<div class="container" style="background-color: rgb(159, 163, 158)">
+   <div class="row justify-content-center">
+     <div class="col-lg-6">
+       <h2 class="text-center">Admin Registration</h2>
+       <form class="custom-form" id="regform" method="POST" action="http://localhost:81/mysite/PRO/admin.php">
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control custom-input" id="user" name="username" placeholder="Enter your name">
+            <div class="invalid-feedback" id="usernameError"></div>
+     	    </div>
+          <div class="form-group">
+	         <label for="password">Password:</label>
+            <input type="password" class="form-control custom-input" id="pwd" name="password">
+            <div class="invalid-feedback" id="passwordError"></div>
+            <div class="form-text">
+               <span>Your password must contain at least 8 characters, special symbols (@, _), and at least one digit.</span>
+             </div>
+           </div>
+           <center><button type="submit" class="btn btn-primary btn-block">Register</button></center>
+       </form>
+ 	  </div>
+    </div>
+	</div>
+	<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("regform");
+        const username = document.getElementById("user");
+        const password = document.getElementById("pwd");
+        form.addEventListener("submit", function (event) {
+            let valid = true;
+            if (username.value.trim() === "" || username.value.length > 30 || !/[@_]/.test(username.value)) {
+                valid = false;
+                username.classList.add("is-invalid");
+                document.getElementById("usernameError").textContent = "Username must not be empty and contain at least one special character.";
+            } else {
+                username.classList.remove("is-invalid");
+                document.getElementById("usernameError").textContent = "";
+            }
+
+            const passwordValue = password.value;
+            if (passwordValue.length >15 || !/[ @_]/.test(passwordValue) || !/\d/.test(passwordValue)) {
+                valid = false;
+                password.classList.add("is-invalid");
+                document.getElementById("passwordError").textContent = "Password must contain at least 8 characters, special symbols (@, _), and at least one digit with maximum length 15.";
+            } else {
+                password.classList.remove("is-invalid");
+                document.getElementById("passwordError").textContent = "";
+            }
+            if (!valid) {
+                event.preventDefault();
+            }
+        });
+    });
+	</script>
+	<?php
+	ini_set('display_errors', 1);
+	error_reporting(E_ALL);
+	$server = 'localhost';
+	$user = 'root';
+	$pwd = '';
+	$database = 'ADMIN'; // Change this to your desired database name
+
+	$connect = mysqli_connect($server, $user, $pwd);
+	$error = mysqli_connect_error();
+	if (!$connect) {
+		 die("Failed to connect: " . $error);
+	}
+
+	$createDB = "CREATE DATABASE IF NOT EXISTS $database;";
+	$result1 = mysqli_query($connect, $createDB);
+
+	$useDB = "USE $database;";
+	$result2 = mysqli_query($connect, $useDB);
+
+	$create_table = "CREATE TABLE IF NOT EXISTS ADMIN(user_name VARCHAR(30), user_pwd VARCHAR(15));";
+	$table_result = mysqli_query($connect, $create_table);
+
+	if ($_SERVER["REQUEST_METHOD"] === "POST") {
+		 $Username = $_POST['username'];
+		 $Password = $_POST['password'];
+
+		 $Username = mysqli_real_escape_string($connect, $Username);
+		 $Password = mysqli_real_escape_string($connect, $Password);
+
+		 // Check if the username already exists in the database
+		 $check_query = "SELECT * FROM ADMIN WHERE user_name = '$Username'";
+		 $check_result = mysqli_query($connect, $check_query);
+
+		 if (mysqli_num_rows($check_result) > 0) {
+		     echo '<script>alert("Username already exists. Please choose a different username.");</script>';
+		 } else {
+		     $insert = "INSERT INTO ADMIN(user_name, user_pwd)
+		                VALUES('$Username', '$Password')";
+		     $ins_res = mysqli_query($connect, $insert);
+
+		     if (!$ins_res) {
+		         die("Insertion error: " . mysqli_error($connect));
+		     }
+		 }
+	}
+?>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  		<link rel="stylesheet" href="styles.css">
+  		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+  		  <style>
+    /* Add media query to adjust styles for smaller devices */
+    @media (max-width: 768px) {
+      .navbar-nav .nav-link {
+        color: rgba(5, 5, 5); /* Change text color for small devices */
+      }
+      .navbar-nav .nav-link:hover {
+	  background-color: rgba(245, 243, 115);
+	  border-radius: 0.25rem;
+		}
+    }
+  </style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light">
+		<a class="navbar-brand dflex" href="#about">
+  			<img src="K.jpeg" class="rounded-pill" height="50" width="100%">
+  			<span class="text-warning m-0 ml-2">SKILL TEST</span>
+  		</a>
+  		<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#mynav">
+                <span class="navbar-toggler-icon"></span>
+       </button>
+		<div class="collapse navbar-collapse" id="mynav">
+			<ul class="navbar-nav ml-auto">
+			   <li class="nav-item active">
+			     <a class="nav-link" href="file:///opt/lampp/htdocs/mysite/PRO/SkillTestWeb.html">Home </a>
+			   </li>
+			   <li class="nav-item">
+			     <a class="nav-link" href="administration.html">Administration</a>
+			   </li>
+			   <li class="nav-item">
+			     <a class="nav-link" href="#">Registration</a>
+			   </li>
+			   <li class="nav-item">
+			     <a class="nav-link" href="#">Login</a>
+			   </li>
+		      <li class="nav-item">
+			     <a class="nav-link" href="#">Contact Us</a>
+			   </li>
+			</ul>
+	  	</div>
+	</nav>
+
+	<div class="container">
+	<br><br><br><br><br><br><br><br><br><br>
+	</div>
+	<div class="container" style="background-color: rgb(159, 163, 158)">
+   <div class="row justify-content-center">
+     <div class="col-lg-6">
+       <h2 class="text-center">Admin Registration</h2>
+       <form class="custom-form" id="regform" method="POST" action="http://localhost:81/mysite/PRO/admin.php">
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control custom-input" id="user" name="username" placeholder="Enter your name">
+            <div class="invalid-feedback" id="usernameError"></div>
+     	    </div>
+          <div class="form-group">
+	         <label for="password">Password:</label>
+            <input type="password" class="form-control custom-input" id="pwd" name="password">
+            <div class="invalid-feedback" id="passwordError"></div>
+            <div class="form-text">
+               <span>Your password must contain at least 8 characters, special symbols (@, _), and at least one digit.</span>
+             </div>
+           </div>
+           <center><button type="submit" class="btn btn-primary btn-block">Register</button></center>
+       </form>
+ 	  </div>
+    </div>
+	</div>
+	<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("regform");
+        const username = document.getElementById("user");
+        const password = document.getElementById("pwd");
+        form.addEventListener("submit", function (event) {
+        		  if (username.value.trim() === "" || password.value === "") {
+            // Fields are empty, do not proceed with validation
+            return;
+        }
+            let valid = true;
+            if ( username.value.length > 30 || !/[@_]/.test(username.value)) {
+                valid = false;
+                username.classList.add("is-invalid");
+                document.getElementById("usernameError").textContent = "Username must not be empty and contain at least one special character.";
+            } else {
+                username.classList.remove("is-invalid");
+                document.getElementById("usernameError").textContent = "";
+            }
+
+            const passwordValue = password.value;
+            if (passwordValue.length >15 || !/[ @_]/.test(passwordValue) || !/\d/.test(passwordValue)) {
+                valid = false;
+                password.classList.add("is-invalid");
+                document.getElementById("passwordError").textContent = "Password must contain at least 8 characters, special symbols (@, _), and at least one digit with maximum length 15.";
+            } else {
+                password.classList.remove("is-invalid");
+                document.getElementById("passwordError").textContent = "";
+            }
+            if (!valid) {
+                event.preventDefault();
+            }
+        });
+    });
+	</script>
+<?php
+	ini_set('display_errors', 1);
+	error_reporting(E_ALL);
+	$server = 'localhost';
+	$user = 'root';
+	$pwd = '';
+	$database = 'ADMIN'; // Change this to your desired database name
+
+	$connect = mysqli_connect($server, $user, $pwd);
+	$error = mysqli_connect_error();
+	if (!$connect) {
+		 die("Failed to connect: " . $error);
+	}
+
+	$createDB = "CREATE DATABASE IF NOT EXISTS $database;";
+	$result1 = mysqli_query($connect, $createDB);
+
+	$useDB = "USE $database;";
+	$result2 = mysqli_query($connect, $useDB);
+
+	$create_table = "CREATE TABLE IF NOT EXISTS ADMIN(user_name VARCHAR(30), user_pwd VARCHAR(15));";
+	$table_result = mysqli_query($connect, $create_table);
+
+	if ($_SERVER["REQUEST_METHOD"] === "POST") {
+		 $Username = $_POST['username'];
+		 $Password = $_POST['password'];
+
+		 $Username = mysqli_real_escape_string($connect, $Username);
+		 $Password = mysqli_real_escape_string($connect, $Password);
+
+		 // Check if the username already exists in the database
+		 $check_query = "SELECT * FROM ADMIN WHERE user_name = '$Username'";
+		 $check_result = mysqli_query($connect, $check_query);
+
+		 if (mysqli_num_rows($check_result) > 0) {
+		     echo '<script>alert("Username already exists. Please choose a different username.");</script>';
+		 } else {
+		     $insert = "INSERT INTO ADMIN(user_name, user_pwd)
+		                VALUES('$Username', '$Password')";
+		     $ins_res = mysqli_query($connect, $insert);
+
+		     if (!$ins_res) {
+		         die("Insertion error: " . mysqli_error($connect));
+		     }
+		 }
+	}
+?>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+<?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+$server = 'localhost';
+$user = 'root';
+$pwd = '';
+$database = 'ADMIN'; // Change this to your desired database name
+
+$connect = mysqli_connect($server, $user, $pwd);
+$error = mysqli_connect_error();
+if (!$connect) {
+    die("Failed to connect: " . $error);
+}
+
+$createDB = "CREATE DATABASE IF NOT EXISTS $database;";
+$result1 = mysqli_query($connect, $createDB);
+
+$useDB = "USE $database;";
+$result2 = mysqli_query($connect, $useDB);
+
+$create_table = "CREATE TABLE IF NOT EXISTS ADMIN(user_name VARCHAR(30), user_pwd VARCHAR(15));";
+$table_result = mysqli_query($connect, $create_table);
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $Username = $_POST['username'];
+    $Password = $_POST['password'];
+
+    $Username = mysqli_real_escape_string($connect, $Username);
+    $Password = mysqli_real_escape_string($connect, $Password);
+
+    // Check if the username already exists in the database
+    $check_query = "SELECT * FROM ADMIN WHERE user_name = '$Username'";
+    $check_result = mysqli_query($connect, $check_query);
+
+    if (mysqli_num_rows($check_result) > 0) {
+        echo '<script>alert("Username already exists. Please choose a different username.");</script>';
+    } else {
+        $insert = "INSERT INTO ADMIN(user_name, user_pwd)
+                   VALUES('$Username', '$Password')";
+        $ins_res = mysqli_query($connect, $insert);
+
+        if (!$ins_res) {
+            die("Insertion error: " . mysqli_error($connect));
+        }
+    }
+}
+?>
